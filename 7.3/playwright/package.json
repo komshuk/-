@@ -6,10 +6,10 @@
   "scripts": {
     "test": "playwright"
   },
-  "author": "",
+  "author": "Max Komshukov",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.12.3",
+    "@playwright/test": "^1.33.0",
     "playwright": "^1.12.3"
   }
 }

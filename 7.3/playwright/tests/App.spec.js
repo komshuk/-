@@ -1,22 +1,38 @@
 const { test, expect } = require("@playwright/test");
+const user = require("./user.js");
+const delay = 10000;
 
-test("test", async ({ page }) => {
-  // Go to https://netology.ru/free/management#/
-  await page.goto("https://netology.ru/free/management#/");
+test("Successful authorization", async ({ page }) => {
+  await page.goto("https://netology.ru/?modal=sign_in");
+  await page.waitForTimeout(delay);
+  await page.screenshot({ path: "screenshot.png", fullPage: true });
+  await page.getByPlaceholder("Email").fill(user.username);
+  await page.screenshot({ path: "screenshot1.png", fullPage: true });
+  await page.getByPlaceholder("Пароль").fill(user.password);
+  await page.screenshot({ path: "screenshot2.png", fullPage: true });
+  await page.getByTestId("login-submit-btn").click();
+  await page.waitForTimeout(delay);
+  await page.screenshot({ path: "screenshot3.png", fullPage: true });
 
-  // Click a
-  await page.click("a");
-  await expect(page).toHaveURL("https://netology.ru/");
+  await expect(page).toHaveURL("https://netology.ru/profile");
+  await expect(
+    page.getByRole("heading", { name: "Мои курсы и профессии" })
+  ).toBeVisible();
+});
 
-  // Click text=Учиться бесплатно
-  await page.click("text=Учиться бесплатно");
-  await expect(page).toHaveURL("https://netology.ru/free");
+test("Unsuccessful authorization", async ({ page }) => {
+  await page.goto("https://netology.ru/?modal=sign_in");
+  await page.waitForTimeout(delay);
+  await page.screenshot({ path: "screenshot5.png", fullPage: true });
+  await page.getByPlaceholder("Email").fill("usermail@mail.ru");
+  await page.screenshot({ path: "screenshot6.png", fullPage: true });
+  await page.getByPlaceholder("Пароль").fill("userpass");
+  await page.screenshot({ path: "screenshot7.png", fullPage: true });
+  await page.getByTestId("login-submit-btn").click();
+  await page.waitForTimeout(delay);
+  await page.screenshot({ path: "screenshot8.png", fullPage: true });
 
-  page.click("text=Бизнес и управление");
-
-  // Click text=Как перенести своё дело в онлайн
-  await page.click("text=Как перенести своё дело в онлайн");
-  await expect(page).toHaveURL(
-    "https://netology.ru/programs/kak-perenesti-svoyo-delo-v-onlajn-bp"
+  await expect(page.getByTestId("login-error-hint")).toHaveText(
+    "Вы ввели неправильно логин или пароль"
   );
 });
