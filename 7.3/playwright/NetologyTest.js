@@ -3,8 +3,8 @@ const { chromium } = require("playwright");
 (async () => {
   const browser = await chromium.launch({
     headless: false,
-    slowMo: 800,
-    devtools: true
+    slowMo: 10000,
+    devtools: true,
   });
   const page = await browser.newPage();
   await page.goto("https://netology.ru");
