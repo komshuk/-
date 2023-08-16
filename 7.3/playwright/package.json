@@ -9,7 +9,7 @@
   "author": "Max Komshukov",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.33.0",
+    "@playwright/test": "^1.12.3",
     "playwright": "^1.12.3"
   }
 }
