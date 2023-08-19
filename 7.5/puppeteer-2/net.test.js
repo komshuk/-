@@ -43,9 +43,9 @@ describe("Netology.ru tests", () => {
 
 test("Should look for a course", async () => {
   await page.goto("https://netology.ru/navigation");
-  await putText(page, "input", "тестировщик");
+  await putText(page, "input", "1C-программист");
   const actual = await page.$eval("a[data-name]", (link) => link.textContent);
-  const expected = "Тестировщик ПО";
+  const expected = "-40%Профессия1С-программист: с нуля до middle18 месяцевстарт 21 августа";
   expect(actual).toContain(expected);
 });
 
