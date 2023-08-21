@@ -1,5 +1,4 @@
-const { clickElement, putText, getText } = require("./lib/commands.js");
-const { generateName } = require("./lib/util.js");
+const { clickElement, getText } = require("./lib/commands.js");
 
 let page;
 
@@ -12,44 +11,46 @@ afterEach(() => {
   page.close();
 });
 
-describe("Netology.ru tests", () => {
+describe("cinema ticket booking tests", () => {
   beforeEach(async () => {
     page = await browser.newPage();
-    await page.goto("https://netology.ru");
+    await page.goto("https://qamid.tmweb.ru");
+    await clickElement(page, "a:nth-child(3) > span.page-nav__day-week");
+    await clickElement(page, "a.movie-seances__time");
   });
 
-  test("The first test'", async () => {
-    const title = await page.title();
-    console.log("Page title: " + title);
-    await clickElement(page, "header a + a");
-    const title2 = await page.title();
-    console.log("Page title: " + title2);
-    const pageList = await browser.newPage();
-    await pageList.goto("https://netology.ru/navigation");
-    await pageList.waitForSelector("h1");
+  test("Should book one ticket", async () => {
+    await clickElement(
+      page,
+      ".buying-scheme__chair_standart:not(.buying-scheme__chair_taken"
+    );
+    await clickElement(page, "button.acceptin-button");
+    const actual = await getText(page, "h2.ticket__check-title");
+    await expect(actual).toContain("Вы выбрали билеты:");
   });
 
-  test("The first link text 'Медиа Нетологии'", async () => {
-    const actual = await getText(page, "header a + a");
-    expect(actual).toContain("Медиа Нетологии");
+  test("Should book two tickets", async () => {
+    await clickElement(
+      page,
+      ".buying-scheme__chair_standart:not(.buying-scheme__chair_taken"
+    );
+    await clickElement(
+      page,
+      ".buying-scheme__chair_selected + :not(.buying-scheme__chair_taken"
+    );
+    await clickElement(page, "button.acceptin-button");
+    const actual = await getText(page, "h2.ticket__check-title");
+    await expect(actual).toContain("Вы выбрали билеты:");
   });
 
-  test("The first link leads on 'Медиа' page", async () => {
-    await clickElement(page, "header a + a");
-    const actual = await getText(page, ".logo__media");
-    await expect(actual).toContain("Медиа");
+  test("Should try to book an occupied chair", async () => {
+    await clickElement(
+      page,
+      ".buying-scheme__chair_taken:not(.buying-scheme__chair_standart)"
+    );
+    const actual = await page.$eval("button.acceptin-button", (link) =>
+      link.getAttribute("disabled")
+    );
+    expect(actual).toEqual("true");
   });
-});
-
-test("Should look for a course", async () => {
-  await page.goto("https://netology.ru/navigation");
-  await putText(page, "input", "1C-программист");
-  const actual = await page.$eval("a[data-name]", (link) => link.textContent);
-  const expected = "-40%Профессия1С-программист: с нуля до middle18 месяцевстарт 21 августа";
-  expect(actual).toContain(expected);
-});
-
-test("Should show warning if login is not email", async () => {
-  await page.goto("https://netology.ru/?modal=sign_in");
-  await putText(page, 'input[type="email"]', generateName(5));
 });
