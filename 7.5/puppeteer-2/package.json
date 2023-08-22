@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watchAll --detectOpenHandles",
     "cucumber": "cucumber-js"
   },
-  "author": "Nikita Bezmenov",
+  "author": "Max Komshukov",
   "license": "ISC",
   "devDependencies": {
     "jest": "^29.5.0",
